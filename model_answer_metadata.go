@@ -11,7 +11,7 @@
 package approveapi
 
 type AnswerMetadata struct {
-	OperatingSystem string `json:"operating_system,omitempty"`
-	IpAddress string `json:"ip_address,omitempty"`
-	Browser string `json:"browser,omitempty"`
+	OperatingSystem *string `json:"operating_system,omitempty"`
+	IpAddress *string `json:"ip_address,omitempty"`
+	Browser *string `json:"browser,omitempty"`
 }

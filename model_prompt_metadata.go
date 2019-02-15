@@ -12,13 +12,13 @@ package approveapi
 
 type PromptMetadata struct {
 	// The date/time of the action.
-	Time string `json:"time,omitempty"`
+	Time *string `json:"time,omitempty"`
 	// The operating system initiating the action, i.e. Mac OS X.
-	OperatingSystem string `json:"operating_system,omitempty"`
+	OperatingSystem *string `json:"operating_system,omitempty"`
 	// The IP address of the computer initiating the action.
-	IpAddress string `json:"ip_address,omitempty"`
+	IpAddress *string `json:"ip_address,omitempty"`
 	// The physical location, like Oakland, CA, of the action.
-	Location string `json:"location,omitempty"`
+	Location *string `json:"location,omitempty"`
 	// The web browser initiating the action, i.e. Chrome.
-	Browser string `json:"browser,omitempty"`
+	Browser *string `json:"browser,omitempty"`
 }

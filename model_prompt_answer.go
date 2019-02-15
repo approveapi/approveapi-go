@@ -15,5 +15,5 @@ type PromptAnswer struct {
 	Time float32 `json:"time"`
 	// The user's answer to whether or not they approve this prompt.
 	Result bool `json:"result"`
-	Metadata AnswerMetadata `json:"metadata,omitempty"`
+	Metadata *AnswerMetadata `json:"metadata,omitempty"`
 }

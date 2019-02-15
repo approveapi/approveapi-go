@@ -11,12 +11,12 @@
 package approveapi
 
 type Prompt struct {
-	Answer PromptAnswer `json:"answer,omitempty"`
+	Answer *PromptAnswer `json:"answer,omitempty"`
 	// The unix timestamp when this prompt was sent.
 	SentAt float32 `json:"sent_at"`
 	// A unique id for this prompt.
 	Id string `json:"id"`
 	// The unix timestamp when this prompt can no longer be answered.
-	ExpiresAt float32 `json:"expires_at,omitempty"`
-	Metadata PromptMetadata `json:"metadata,omitempty"`
+	ExpiresAt *float32 `json:"expires_at,omitempty"`
+	Metadata *PromptMetadata `json:"metadata,omitempty"`
 }
