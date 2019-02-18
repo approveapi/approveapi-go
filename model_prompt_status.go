@@ -13,4 +13,6 @@ package approveapi
 type PromptStatus struct {
 	// Whether the prompt has been answered or not.
 	IsAnswered bool `json:"is_answered"`
+	// Whether the prompt can still be answered.
+	IsExpired bool `json:"is_expired"`
 }

@@ -157,13 +157,18 @@ components:
   schemas:
     PromptStatus:
       example:
+        is_expired: true
         is_answered: true
       properties:
         is_answered:
           description: Whether the prompt has been answered or not.
           type: boolean
+        is_expired:
+          description: Whether the prompt can still be answered.
+          type: boolean
       required:
       - is_answered
+      - is_expired
       type: object
     CreatePromptRequest:
       example:
@@ -225,7 +230,7 @@ components:
           location: location
           time: time
           ip_address: ip_address
-        expires_at: 1.4658129805029452
+        is_expired: true
         answer:
           result: true
           metadata:
@@ -240,16 +245,17 @@ components:
         sent_at:
           description: The unix timestamp when this prompt was sent.
           type: number
+        is_expired:
+          description: Whether the prompt can still be answered.
+          type: boolean
         id:
           description: A unique id for this prompt.
           type: string
-        expires_at:
-          description: The unix timestamp when this prompt can no longer be answered.
-          type: number
         metadata:
           $ref: '#/components/schemas/PromptMetadata'
       required:
       - id
+      - is_expired
       - sent_at
       type: object
     AnswerMetadata:
