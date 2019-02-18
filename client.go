@@ -70,7 +70,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	return c
 }
 
-fun CreateClient(apiKey string) *APIClient {
+func CreateClient(apiKey string) *APIClient {
 	cfg := approveapi.NewConfiguration()
 	cfg.Authentication.BasicAuth = &approveapi.BasicAuth {
 		UserName: apiKey,
