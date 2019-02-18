@@ -13,7 +13,7 @@ package approveapi
 import (
 	"net/http"
 
-	"golang.org/x/oauth2
+	"golang.org/x/oauth2"
 )
 
 // BasicAuth provides basic http authentication to a request passed via context using ContextBasicAuth
