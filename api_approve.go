@@ -88,7 +88,7 @@ func (a *ApproveApiService) CreatePromptWithContext(ctx context.Context, createP
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
@@ -137,7 +137,7 @@ func (a *ApproveApiService) CreatePromptWithContext(ctx context.Context, createP
 
 	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 	if err != nil {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: err.Error(),
 		}
@@ -223,7 +223,7 @@ func (a *ApproveApiService) GetPromptWithContext(ctx context.Context, id string,
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
@@ -247,12 +247,22 @@ func (a *ApproveApiService) GetPromptWithContext(ctx context.Context, id string,
 			newErr.model = v
 			return localVarReturnValue, localVarHttpResponse, newErr
 		}
+		if localVarHttpResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
+		}
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 	if err != nil {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: err.Error(),
 		}
@@ -328,7 +338,7 @@ func (a *ApproveApiService) GetPromptStatusWithContext(ctx context.Context, id s
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
@@ -352,12 +362,22 @@ func (a *ApproveApiService) GetPromptStatusWithContext(ctx context.Context, id s
 			newErr.model = v
 			return localVarReturnValue, localVarHttpResponse, newErr
 		}
+		if localVarHttpResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
+		}
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
 	if err != nil {
-		newErr := GenericOpenAPIError{
+		newErr := ApproveApiError{
 			body:  localVarBody,
 			error: err.Error(),
 		}

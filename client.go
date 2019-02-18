@@ -463,24 +463,24 @@ func strlen(s string) int {
 	return utf8.RuneCountInString(s)
 }
 
-// GenericOpenAPIError Provides access to the body, error and model on returned errors.
-type GenericOpenAPIError struct {
+// ApproveApiError Provides access to the body, error and model on returned errors.
+type ApproveApiError struct {
 	body  []byte
 	error string
 	model interface{}
 }
 
 // Error returns non-empty string if there was an error.
-func (e GenericOpenAPIError) Error() string {
+func (e ApproveApiError) Error() string {
 	return e.error
 }
 
 // Body returns the raw bytes of the response
-func (e GenericOpenAPIError) Body() []byte {
+func (e ApproveApiError) Body() []byte {
 	return e.body
 }
 
 // Model returns the unpacked model of the error
-func (e GenericOpenAPIError) Model() interface{} {
+func (e ApproveApiError) Model() interface{} {
 	return e.model
 }

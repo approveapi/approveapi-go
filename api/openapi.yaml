@@ -42,6 +42,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: A prompt with this identifier could not be found
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid parameters
       security:
       - apiKey: []
       summary: Retrieve a prompt
@@ -73,6 +79,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: A prompt with this identifier could not be found
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid parameters
       summary: Check prompt status
       tags:
       - approve
