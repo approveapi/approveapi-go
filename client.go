@@ -71,8 +71,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 }
 
 func CreateClient(apiKey string) *APIClient {
-	cfg := approveapi.NewConfiguration()
-	cfg.Authentication.BasicAuth = &approveapi.BasicAuth {
+	cfg := NewConfiguration()
+	cfg.Authentication.BasicAuth = &BasicAuth {
 		UserName: apiKey,
 	}
 	return NewAPIClient(cfg)
