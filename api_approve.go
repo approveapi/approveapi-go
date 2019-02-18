@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 	"fmt"
 	"github.com/antihax/optional"
 )
@@ -34,7 +35,7 @@ Creates a prompt and pushes it to the user (sends via email, sms, or other suppo
  * @param createPromptRequest
 @return Prompt
 */
-func (a *ApproveApiService) CreatePrompt(ctx context.Context, createPromptRequest CreatePromptRequest) (Prompt, *http.Response, error) {
+func (a *ApproveApiService) CreatePromptWithContext(ctx context.Context, createPromptRequest CreatePromptRequest) (Prompt, *http.Response, error) {
 	var (
 		localVarHttpMethod   = strings.ToUpper("Post")
 		localVarPostBody     interface{}
@@ -146,6 +147,12 @@ func (a *ApproveApiService) CreatePrompt(ctx context.Context, createPromptReques
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
+func (a *ApproveApiService) CreatePrompt(createPromptRequest CreatePromptRequest) (Prompt, *http.Response, error) {
+	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
+	return a.CreatePrompt(ctx, createPromptRequest)
+}
+
+
 /*
 ApproveApiService Retrieve a prompt
 Retrieve the prompt object with the given ID.
@@ -160,7 +167,7 @@ type GetPromptOpts struct {
 	LongPoll optional.Bool
 }
 
-func (a *ApproveApiService) GetPrompt(ctx context.Context, id string, localVarOptionals *GetPromptOpts) (Prompt, *http.Response, error) {
+func (a *ApproveApiService) GetPromptWithContext(ctx context.Context, id string, localVarOptionals *GetPromptOpts) (Prompt, *http.Response, error) {
 	var (
 		localVarHttpMethod   = strings.ToUpper("Get")
 		localVarPostBody     interface{}
@@ -254,6 +261,12 @@ func (a *ApproveApiService) GetPrompt(ctx context.Context, id string, localVarOp
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
+func (a *ApproveApiService) GetPrompt(id string, localVarOptionals *GetPromptOpts) (Prompt, *http.Response, error) {
+	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
+	return a.GetPrompt(ctx, id, localVarOptionals)
+}
+
+
 /*
 ApproveApiService Check prompt status
 Returns whether a prompt has been completed by the user. This request does not require authentication, and so can be used client-side without sharing API credentials.
@@ -261,7 +274,7 @@ Returns whether a prompt has been completed by the user. This request does not r
  * @param id The prompt identifier.
 @return PromptStatus
 */
-func (a *ApproveApiService) GetPromptStatus(ctx context.Context, id string) (PromptStatus, *http.Response, error) {
+func (a *ApproveApiService) GetPromptStatusWithContext(ctx context.Context, id string) (PromptStatus, *http.Response, error) {
 	var (
 		localVarHttpMethod   = strings.ToUpper("Get")
 		localVarPostBody     interface{}
@@ -351,3 +364,9 @@ func (a *ApproveApiService) GetPromptStatus(ctx context.Context, id string) (Pro
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
+func (a *ApproveApiService) GetPromptStatus(id string) (PromptStatus, *http.Response, error) {
+	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
+	return a.GetPromptStatus(ctx, id)
+}
+

@@ -281,29 +281,28 @@ func (c *APIClient) prepareRequest(
 	if ctx != nil {
 		// add context to the request
 		localVarRequest = localVarRequest.WithContext(ctx)
+	}
 
-		// Walk through any authentication.
-
+	// Walk through any authentication.
+	auth := c.cfg.Authentication
+	if auth.OAuth2 != nil {
 		// OAuth2 authentication
-		if tok, ok := ctx.Value(ContextOAuth2).(oauth2.TokenSource); ok {
-			// We were able to grab an oauth2 token from the context
-			var latestToken *oauth2.Token
-			if latestToken, err = tok.Token(); err != nil {
-				return nil, err
-			}
-
-			latestToken.SetAuthHeader(localVarRequest)
+		var latestToken *oauth2.Token
+		if latestToken, err = auth.OAuth2.Token(); err != nil {
+			return nil, err
 		}
 
+		latestToken.SetAuthHeader(localVarRequest)
+	}
+
+	if auth.BasicAuth != nil {
 		// Basic HTTP Authentication
-		if auth, ok := ctx.Value(ContextBasicAuth).(BasicAuth); ok {
-			localVarRequest.SetBasicAuth(auth.UserName, auth.Password)
-		}
+		localVarRequest.SetBasicAuth(auth.BasicAuth.UserName, auth.BasicAuth.Password)
+	}
 
+	if auth.AccessToken != nil {
 		// AccessToken Authentication
-		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
-			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
-		}
+		localVarRequest.Header.Add("Authorization", "Bearer "+*auth.AccessToken)
 	}
 
 	for header, value := range c.cfg.DefaultHeader {
