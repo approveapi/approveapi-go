@@ -70,6 +70,14 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	return c
 }
 
+fun CreateClient(apiKey string) *APIClient {
+	cfg := approveapi.NewConfiguration()
+	cfg.Authentication.BasicAuth = &approveapi.BasicAuth {
+		UserName: apiKey,
+	}
+	return NewAPIClient(cfg)
+}
+
 func atoi(in string) (int, error) {
 	return strconv.Atoi(in)
 }
