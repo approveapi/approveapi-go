@@ -148,8 +148,9 @@ func (a *ApproveApiService) CreatePromptWithContext(ctx context.Context, createP
 }
 
 func (a *ApproveApiService) CreatePrompt(createPromptRequest CreatePromptRequest) (Prompt, *http.Response, error) {
-	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
-	return a.CreatePrompt(ctx, createPromptRequest)
+	ctx, cancel := context.WithTimeout(context.Background(), 11*time.Minute)
+	defer cancel()
+	return a.CreatePromptWithContext(ctx, createPromptRequest)
 }
 
 
@@ -262,8 +263,9 @@ func (a *ApproveApiService) GetPromptWithContext(ctx context.Context, id string,
 }
 
 func (a *ApproveApiService) GetPrompt(id string, localVarOptionals *GetPromptOpts) (Prompt, *http.Response, error) {
-	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
-	return a.GetPrompt(ctx, id, localVarOptionals)
+	ctx, cancel := context.WithTimeout(context.Background(), 11*time.Minute)
+	defer cancel()
+	return a.GetPromptWithContext(ctx, id, localVarOptionals)
 }
 
 
@@ -366,7 +368,8 @@ func (a *ApproveApiService) GetPromptStatusWithContext(ctx context.Context, id s
 }
 
 func (a *ApproveApiService) GetPromptStatus(id string) (PromptStatus, *http.Response, error) {
-	ctx := context.WithTimeout(context.Background(), 11*time.Minute)
-	return a.GetPromptStatus(ctx, id)
+	ctx, cancel := context.WithTimeout(context.Background(), 11*time.Minute)
+	defer cancel()
+	return a.GetPromptStatusWithContext(ctx, id)
 }
 

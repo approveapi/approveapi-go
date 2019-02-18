@@ -288,7 +288,7 @@ func (c *APIClient) prepareRequest(
 	if auth.OAuth2 != nil {
 		// OAuth2 authentication
 		var latestToken *oauth2.Token
-		if latestToken, err = auth.OAuth2.Token(); err != nil {
+		if latestToken, err = (*auth.OAuth2).Token(); err != nil {
 			return nil, err
 		}
 
