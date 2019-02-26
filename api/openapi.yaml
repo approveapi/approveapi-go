@@ -4,7 +4,7 @@ info:
     email: dev@approveapi.com
   description: The simple API to request a user's approval on anything via email + sms.
   title: ApproveAPISwagger
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: https://approve.sh
 paths:
@@ -180,6 +180,8 @@ components:
           ip_address: ip_address
         long_poll: true
         reject_text: reject_text
+        approve_redirect_url: approve_redirect_url
+        reject_redirect_url: reject_redirect_url
         approve_text: approve_text
         body: body
         title: title
@@ -193,7 +195,7 @@ components:
           description: The title of an approval request. Defaults to an empty string.
           type: string
         reject_text:
-          description: The reject action text. Defaults to 'Reject'.
+          description: The reject action text. If not specified the reject button will NOT be rendered, and the user will only see an approve action button.
           type: string
         expires_in:
           description: The number of seconds until this request can no longer be answered.
@@ -206,6 +208,12 @@ components:
           type: string
         approve_text:
           description: The approve action text. Defaults to 'Approve'.
+          type: string
+        approve_redirect_url:
+          description: An HTTPS URL to redirect the user to if the prompt is approved. This URL is kept secret until the user is redirected to it.
+          type: string
+        reject_redirect_url:
+          description: An HTTPS URL to redirect the user to if the prompt is rejected. This URL is kept secret until the user is redirected to it.
           type: string
         metadata:
           $ref: '#/components/schemas/PromptMetadata'
