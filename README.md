@@ -4,9 +4,9 @@
 
 Go API bindings for the [ApproveAPI HTTP API](https://approveapi.com).
 
-ApproveAPI is a simple API to request a user's real-time approval on anything via email, sms + mobile push.
+*ApproveAPI is a simple API to request a user's real-time approval on anything via email, sms + mobile push.*
 
-Features (almost complete):
+## Features
 - [x] Send Prompt
   - [x] web redirect actions (i.e. magic links)
   - [x] custom approve/reject buttons
