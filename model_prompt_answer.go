@@ -11,9 +11,9 @@
 package approveapi
 
 type PromptAnswer struct {
-	// The unix timestamp when the user answered the prompt.
-	Time float32 `json:"time"`
 	// The user's answer to whether or not they approve this prompt.
 	Result bool `json:"result"`
+	// The unix timestamp when the user answered the prompt.
+	Time float32 `json:"time"`
 	Metadata *AnswerMetadata `json:"metadata,omitempty"`
 }
