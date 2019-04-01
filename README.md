@@ -15,7 +15,7 @@ Go API bindings for the [ApproveAPI HTTP API](https://approveapi.com).
 - [x] Retrieve Prompt
 - [x] Check Prompt status 
 - [x] Futures support
-- [ ] Webhook callbacks
+- [x] Webhook callbacks
 
 ## Install
 
