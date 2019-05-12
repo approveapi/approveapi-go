@@ -11,26 +11,26 @@
 package approveapi
 
 type CreatePromptRequest struct {
-	// The user to send the approval request to. Can be either an email address or a phone number.
-	User string `json:"user"`
 	// The body of the approval request to show the user.
 	Body string `json:"body"`
+	// Allows calling `create_prompt` multiple times idempotently, such that a prompt is sent at-most once. This key should contain sufficient randomness. Idempotent requests are stored for 24 hours. After that time, the same key will create a new request.
+	IdempotencyKey *string `json:"idempotency_key,omitempty"`
 	// The title of an approval request. Defaults to an empty string.
 	Title *string `json:"title,omitempty"`
+	// The reject action text. If not specified the reject button will NOT be rendered, and the user will only see an approve action button.
+	RejectText *string `json:"reject_text,omitempty"`
+	// The number of seconds until this request can no longer be answered.
+	ExpiresIn *float32 `json:"expires_in,omitempty"`
+	// If true, the request waits (long-polls) until the user responds to the prompt or more than 10 minutes pass. Defaults to false.
+	LongPoll *bool `json:"long_poll,omitempty"`
+	InternalData *map[string]string `json:"internal_data,omitempty"`
+	// The user to send the approval request to. Can be either an email address or a phone number.
+	User string `json:"user"`
 	// The approve action text. Defaults to 'Approve'.
 	ApproveText *string `json:"approve_text,omitempty"`
 	// An HTTPS URL to redirect the user to if the prompt is approved. This URL is kept secret until the user is redirected to it.
 	ApproveRedirectUrl *string `json:"approve_redirect_url,omitempty"`
-	// The reject action text. If not specified the reject button will NOT be rendered, and the user will only see an approve action button.
-	RejectText *string `json:"reject_text,omitempty"`
 	// An HTTPS URL to redirect the user to if the prompt is rejected. This URL is kept secret until the user is redirected to it.
 	RejectRedirectUrl *string `json:"reject_redirect_url,omitempty"`
-	// If true, the request waits (long-polls) until the user responds to the prompt or more than 10 minutes pass. Defaults to false.
-	LongPoll *bool `json:"long_poll,omitempty"`
-	// The number of seconds until this request can no longer be answered.
-	ExpiresIn *float32 `json:"expires_in,omitempty"`
 	Metadata *PromptMetadata `json:"metadata,omitempty"`
-	InternalData *map[string]string `json:"internal_data,omitempty"`
-	// Allows calling `create_prompt` multiple times idempotently, such that a prompt is sent at-most once. This key should contain sufficient randomness. Idempotent requests are stored for 24 hours. After that time, the same key will create a new request.
-	IdempotencyKey *string `json:"idempotency_key,omitempty"`
 }

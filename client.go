@@ -51,25 +51,31 @@ type APIClient struct {
 
 type service struct {
 	client *APIClient
-	ctx context.Context
 }
 
 // NewAPIClient creates a new API client. Requires a userAgent string describing your application.
 // optionally a custom http.Client to allow for advanced features such as caching.
-func NewAPIClient(cfg *Configuration, ctx context.Context) *APIClient {
+func NewAPIClient(cfg *Configuration) *APIClient {
 	if cfg.HTTPClient == nil {
 		cfg.HTTPClient = http.DefaultClient
 	}
 
 	c := &APIClient{}
 	c.cfg = cfg
-	c.common.ctx = ctx
 	c.common.client = c
 
 	// API Services
 	c.ApproveApi = (*ApproveApiService)(&c.common)
 
 	return c
+}
+
+func CreateClient(apiKey string) *APIClient {
+	cfg := NewConfiguration()
+	cfg.Authentication.BasicAuth = &BasicAuth {
+		UserName: apiKey,
+	}
+	return NewAPIClient(cfg)
 }
 
 func atoi(in string) (int, error) {
@@ -160,6 +166,7 @@ func (c *APIClient) ChangeBasePath(path string) {
 
 // prepareRequest build the request
 func (c *APIClient) prepareRequest(
+	ctx context.Context,
 	path string, method string,
 	postBody interface{},
 	headerParams map[string]string,
@@ -279,32 +286,31 @@ func (c *APIClient) prepareRequest(
 	// Add the user agent to the request.
 	localVarRequest.Header.Add("User-Agent", c.cfg.UserAgent)
 
-	if c.common.ctx != nil {
+	if ctx != nil {
 		// add context to the request
-		localVarRequest = localVarRequest.WithContext(c.common.ctx)
+		localVarRequest = localVarRequest.WithContext(ctx)
+	}
 
-		// Walk through any authentication.
-
+	// Walk through any authentication.
+	auth := c.cfg.Authentication
+	if auth.OAuth2 != nil {
 		// OAuth2 authentication
-		if tok, ok := c.common.ctx.Value(ContextOAuth2).(oauth2.TokenSource); ok {
-			// We were able to grab an oauth2 token from the context
-			var latestToken *oauth2.Token
-			if latestToken, err = tok.Token(); err != nil {
-				return nil, err
-			}
-
-			latestToken.SetAuthHeader(localVarRequest)
+		var latestToken *oauth2.Token
+		if latestToken, err = (*auth.OAuth2).Token(); err != nil {
+			return nil, err
 		}
 
+		latestToken.SetAuthHeader(localVarRequest)
+	}
+
+	if auth.BasicAuth != nil {
 		// Basic HTTP Authentication
-		if auth, ok := c.common.ctx.Value(ContextBasicAuth).(BasicAuth); ok {
-			localVarRequest.SetBasicAuth(auth.UserName, auth.Password)
-		}
+		localVarRequest.SetBasicAuth(auth.BasicAuth.UserName, auth.BasicAuth.Password)
+	}
 
+	if auth.AccessToken != nil {
 		// AccessToken Authentication
-		if auth, ok := c.common.ctx.Value(ContextAccessToken).(string); ok {
-			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
-		}
+		localVarRequest.Header.Add("Authorization", "Bearer "+*auth.AccessToken)
 	}
 
 	for header, value := range c.cfg.DefaultHeader {
@@ -457,24 +463,24 @@ func strlen(s string) int {
 	return utf8.RuneCountInString(s)
 }
 
-// GenericOpenAPIError Provides access to the body, error and model on returned errors.
-type GenericOpenAPIError struct {
+// ApproveApiError Provides access to the body, error and model on returned errors.
+type ApproveApiError struct {
 	body  []byte
 	error string
 	model interface{}
 }
 
 // Error returns non-empty string if there was an error.
-func (e GenericOpenAPIError) Error() string {
+func (e ApproveApiError) Error() string {
 	return e.error
 }
 
 // Body returns the raw bytes of the response
-func (e GenericOpenAPIError) Body() []byte {
+func (e ApproveApiError) Body() []byte {
 	return e.body
 }
 
 // Model returns the unpacked model of the error
-func (e GenericOpenAPIError) Model() interface{} {
+func (e ApproveApiError) Model() interface{} {
 	return e.model
 }

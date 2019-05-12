@@ -3,9 +3,12 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**IpAddress** | **string** |  | [optional] 
-**Browser** | **string** |  | [optional] 
+**SlackRealName** | **string** |  | [optional] 
 **OperatingSystem** | **string** |  | [optional] 
+**SlackUsername** | **string** |  | [optional] 
+**IpAddress** | **string** |  | [optional] 
+**SlackEmail** | **string** |  | [optional] 
+**Browser** | **string** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

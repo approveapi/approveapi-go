@@ -8,46 +8,6 @@ info:
 servers:
 - url: https://approve.sh
 paths:
-  /prompt:
-    post:
-      description: Creates a prompt and pushes it to the user (sends via email, sms, or other supported protocols).
-      operationId: CreatePrompt
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePromptRequest'
-        required: true
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Prompt'
-          description: OK
-        400:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Invalid parameters
-        401:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Missing or invalid API key in the username basic auth field
-        504:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Polling timed out with no user response
-      security:
-      - apiKey: []
-      summary: Sending a prompt
-      tags:
-      - approve
   /prompt/{id}:
     get:
       description: Retrieve the prompt object with the given ID.
@@ -76,18 +36,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Prompt'
           description: OK
-        400:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Invalid parameters
         404:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: A prompt with this identifier could not be found
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid parameters
       security:
       - apiKey: []
       summary: Retrieve a prompt
@@ -113,23 +73,75 @@ paths:
               schema:
                 $ref: '#/components/schemas/PromptStatus'
           description: OK
-        400:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Invalid parameters
         404:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: A prompt with this identifier could not be found
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid parameters
       summary: Check prompt status
+      tags:
+      - approve
+  /prompt:
+    post:
+      description: Creates a prompt and pushes it to the user (sends via email, sms, or other supported protocols).
+      operationId: CreatePrompt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePromptRequest'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+          description: OK
+        504:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Polling timed out with no user response
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Missing or invalid API key in the username basic auth field
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid parameters
+      security:
+      - apiKey: []
+      summary: Sending a prompt
       tags:
       - approve
 components:
   responses:
+    PromptNotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: A prompt with this identifier could not be found
+    PollTimeout:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Polling timed out with no user response
     Unauthorized:
       content:
         application/json:
@@ -142,19 +154,11 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Invalid parameters
-    PollTimeout:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Polling timed out with no user response
-    PromptNotFound:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: A prompt with this identifier could not be found
   schemas:
+    PromptInternalData:
+      additionalProperties:
+        type: string
+      type: object
     Prompt:
       example:
         sent_at: 0.8008281904610115
@@ -175,8 +179,8 @@ components:
           approve_text: approve_text
           body: body
           title: title
+          expires_in: 1.4658129805029452
           user: user
-          expires_in: 6.027456183070403
         metadata:
           browser: browser
           operating_system: operating_system
@@ -187,25 +191,28 @@ components:
         answer:
           result: true
           metadata:
+            slack_real_name: slack_real_name
             browser: browser
             operating_system: operating_system
             ip_address: ip_address
-          time: 1.4658129805029452
+            slack_email: slack_email
+            slack_username: slack_username
+          time: 6.027456183070403
         id: id
       properties:
-        id:
-          description: A unique id for this prompt.
-          type: string
         sent_at:
           description: The unix timestamp when this prompt was sent.
           type: number
+        answer:
+          $ref: '#/components/schemas/PromptAnswer'
         is_expired:
           description: Whether the prompt can still be answered.
           type: boolean
         request:
           $ref: '#/components/schemas/CreatePromptRequest'
-        answer:
-          $ref: '#/components/schemas/PromptAnswer'
+        id:
+          description: A unique id for this prompt.
+          type: string
         metadata:
           $ref: '#/components/schemas/PromptMetadata'
       required:
@@ -213,6 +220,30 @@ components:
       - is_expired
       - request
       - sent_at
+      type: object
+    PromptMetadata:
+      example:
+        browser: browser
+        operating_system: operating_system
+        location: location
+        time: time
+        ip_address: ip_address
+      properties:
+        time:
+          description: The date/time of the action.
+          type: string
+        operating_system:
+          description: The operating system initiating the action, i.e. Mac OS X.
+          type: string
+        ip_address:
+          description: The IP address of the computer initiating the action.
+          type: string
+        location:
+          description: The physical location, like Oakland, CA, of the action.
+          type: string
+        browser:
+          description: The web browser initiating the action, i.e. Chrome.
+          type: string
       type: object
     CreatePromptRequest:
       example:
@@ -232,17 +263,33 @@ components:
         approve_text: approve_text
         body: body
         title: title
+        expires_in: 1.4658129805029452
         user: user
-        expires_in: 6.027456183070403
       properties:
-        user:
-          description: The user to send the approval request to. Can be either an email address or a phone number.
-          type: string
         body:
           description: The body of the approval request to show the user.
           type: string
+        idempotency_key:
+          description: Allows calling `create_prompt` multiple times idempotently, such that a prompt is sent at-most once. This key should contain sufficient randomness. Idempotent requests are stored for 24 hours. After that time, the same key will create a new request.
+          type: string
         title:
           description: The title of an approval request. Defaults to an empty string.
+          type: string
+        reject_text:
+          description: The reject action text. If not specified the reject button will NOT be rendered, and the user will only see an approve action button.
+          type: string
+        expires_in:
+          description: The number of seconds until this request can no longer be answered.
+          type: number
+        long_poll:
+          description: If true, the request waits (long-polls) until the user responds to the prompt or more than 10 minutes pass. Defaults to false.
+          type: boolean
+        internal_data:
+          additionalProperties:
+            type: string
+          type: object
+        user:
+          description: The user to send the approval request to. Can be either an email address or a phone number.
           type: string
         approve_text:
           description: The approve action text. Defaults to 'Approve'.
@@ -250,92 +297,22 @@ components:
         approve_redirect_url:
           description: An HTTPS URL to redirect the user to if the prompt is approved. This URL is kept secret until the user is redirected to it.
           type: string
-        reject_text:
-          description: The reject action text. If not specified the reject button will NOT be rendered, and the user will only see an approve action button.
-          type: string
         reject_redirect_url:
           description: An HTTPS URL to redirect the user to if the prompt is rejected. This URL is kept secret until the user is redirected to it.
           type: string
-        long_poll:
-          description: If true, the request waits (long-polls) until the user responds to the prompt or more than 10 minutes pass. Defaults to false.
-          type: boolean
-        expires_in:
-          description: The number of seconds until this request can no longer be answered.
-          type: number
         metadata:
           $ref: '#/components/schemas/PromptMetadata'
-        internal_data:
-          additionalProperties:
-            type: string
-          type: object
-        idempotency_key:
-          description: Allows calling `create_prompt` multiple times idempotently, such that a prompt is sent at-most once. This key should contain sufficient randomness. Idempotent requests are stored for 24 hours. After that time, the same key will create a new request.
-          type: string
       required:
       - body
       - user
       type: object
-    PromptMetadata:
-      example:
-        browser: browser
-        operating_system: operating_system
-        location: location
-        time: time
-        ip_address: ip_address
+    Error:
       properties:
-        location:
-          description: The physical location, like Oakland, CA, of the action.
+        error:
+          description: A human readable API error message.
           type: string
-        time:
-          description: The date/time of the action.
-          type: string
-        ip_address:
-          description: The IP address of the computer initiating the action.
-          type: string
-        browser:
-          description: The web browser initiating the action, i.e. Chrome.
-          type: string
-        operating_system:
-          description: The operating system initiating the action, i.e. Mac OS X.
-          type: string
-      type: object
-    PromptInternalData:
-      additionalProperties:
-        type: string
-      type: object
-    PromptAnswer:
-      example:
-        result: true
-        metadata:
-          browser: browser
-          operating_system: operating_system
-          ip_address: ip_address
-        time: 1.4658129805029452
-      properties:
-        result:
-          description: The user's answer to whether or not they approve this prompt.
-          type: boolean
-        time:
-          description: The unix timestamp when the user answered the prompt.
-          type: number
-        metadata:
-          $ref: '#/components/schemas/AnswerMetadata'
       required:
-      - result
-      - time
-      type: object
-    AnswerMetadata:
-      example:
-        browser: browser
-        operating_system: operating_system
-        ip_address: ip_address
-      properties:
-        ip_address:
-          type: string
-        browser:
-          type: string
-        operating_system:
-          type: string
+      - error
       type: object
     PromptStatus:
       example:
@@ -352,13 +329,51 @@ components:
       - is_answered
       - is_expired
       type: object
-    Error:
+    AnswerMetadata:
+      example:
+        slack_real_name: slack_real_name
+        browser: browser
+        operating_system: operating_system
+        ip_address: ip_address
+        slack_email: slack_email
+        slack_username: slack_username
       properties:
-        error:
-          description: A human readable API error message.
+        slack_real_name:
           type: string
+        operating_system:
+          type: string
+        slack_username:
+          type: string
+        ip_address:
+          type: string
+        slack_email:
+          type: string
+        browser:
+          type: string
+      type: object
+    PromptAnswer:
+      example:
+        result: true
+        metadata:
+          slack_real_name: slack_real_name
+          browser: browser
+          operating_system: operating_system
+          ip_address: ip_address
+          slack_email: slack_email
+          slack_username: slack_username
+        time: 6.027456183070403
+      properties:
+        time:
+          description: The unix timestamp when the user answered the prompt.
+          type: number
+        result:
+          description: The user's answer to whether or not they approve this prompt.
+          type: boolean
+        metadata:
+          $ref: '#/components/schemas/AnswerMetadata'
       required:
-      - error
+      - result
+      - time
       type: object
   securitySchemes:
     apiKey:

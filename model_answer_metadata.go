@@ -11,7 +11,10 @@
 package approveapi
 
 type AnswerMetadata struct {
-	IpAddress *string `json:"ip_address,omitempty"`
-	Browser *string `json:"browser,omitempty"`
+	SlackRealName *string `json:"slack_real_name,omitempty"`
 	OperatingSystem *string `json:"operating_system,omitempty"`
+	SlackUsername *string `json:"slack_username,omitempty"`
+	IpAddress *string `json:"ip_address,omitempty"`
+	SlackEmail *string `json:"slack_email,omitempty"`
+	Browser *string `json:"browser,omitempty"`
 }
